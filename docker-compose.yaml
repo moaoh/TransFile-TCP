@@ -1,0 +1,32 @@
+services:
+  common:
+    container_name: common
+    build:
+      context: .
+      dockerfile: common/Dockerfile
+    volumes:
+      - ./common:/app/common
+
+  server:
+    container_name: server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - common
+    volumes:
+      - ./server:/app/server
+      - ./common:/app/common
+
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app/client
+      - ./common:/app/common
