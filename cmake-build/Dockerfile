@@ -16,5 +16,5 @@ COPY . /app
 
 # CMakeCache.txt 파일이 이미 있을 수 있으므로 삭제 후 다시 빌드
 RUN rm -rf build && mkdir -p build && cd build && \
-    cmake /app && \
+    cmake .. && \
     make
