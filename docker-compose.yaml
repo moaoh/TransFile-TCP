@@ -10,25 +10,12 @@ services:
       - ./server:/app/server
       - ./client:/app/client
 
-  common:
-    image: common
-    container_name: common
-    build:
-      context: .
-      dockerfile: common/Dockerfile
-    depends_on:
-      - cmake-build
-    volumes:
-      - ./common:/app/common
-
   server:
     image: server
     container_name: server
     build:
       context: .
       dockerfile: server/Dockerfile
-    ports:
-      - "8080:8080"
     depends_on:
       - cmake-build
     volumes:
