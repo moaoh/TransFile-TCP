@@ -1,5 +1,4 @@
-#include <iostream>
-#include "network_utils.hpp"
+#include "server.hpp"
 
 int main() {
     printMessage();

@@ -2,4 +2,4 @@
 
 #include <iostream>
 
-#include "common.hpp"
+void printMessage();

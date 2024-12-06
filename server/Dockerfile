@@ -1,7 +1,7 @@
 # server/Dockerfile
 FROM cmake-build
 
-COPY ./ /app
 WORKDIR /app
+COPY . .
 
 CMD ["/app/build/server/server"]

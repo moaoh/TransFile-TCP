@@ -1,6 +1,5 @@
-#ifndef CLIENT_HPP_
-#define CLIENT_HPP_
+#pragma once
 
 #include <iostream>
 
-#endif
+#include "common.hpp"
