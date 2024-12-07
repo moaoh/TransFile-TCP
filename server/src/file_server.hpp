@@ -12,3 +12,5 @@
 #include "common.hpp"
 
 #define PORT 8080
+
+int file_server();

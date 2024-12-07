@@ -1,6 +1,7 @@
-#include "tcp_server.hpp"
+#include "file_server.hpp"
 
-int main() {
+// tcp
+int file_server() {
   int server_fd, new_socket, valread;
   struct sockaddr_in address;
   int addrlen = sizeof(address);
