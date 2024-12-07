@@ -30,6 +30,7 @@ services:
       dockerfile: client/Dockerfile
     depends_on:
       - cmake-build
+      - server
     volumes:
       - ./client:/app/client
       - ./common:/app/common
