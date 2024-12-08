@@ -1,0 +1,18 @@
+// chat.proto
+syntax = "proto3";
+
+package chat;
+
+// 메시지 정의
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string message = 1;
+}
+
+// 서비스 정의
+service ChatService {
+  rpc SayHello (HelloRequest) returns (HelloResponse);
+}
