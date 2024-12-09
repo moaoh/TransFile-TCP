@@ -2,20 +2,29 @@
 
 // gRPC
 void ChatClient::create() {
-    std::cout << "create" << std::endl;
-    chat::ChatRoomRequest request;
-    chat::ChatRoomResponse response;
+    chat::ChatRoomRequest chatRoomRequest;
+    chat::ChatRoomResponse chatRoomResponse;
+    std::string userId;
+
+    std::cout << "Enter your user ID: ";
+    std::getline(std::cin, userId);
+
+    std::cout << "your user ID: " << userId << std::endl;
 
     grpc::ClientContext createRoomContext;
-    request.set_message("Hi!");
-    grpc::Status status = _stub->CreateRoom(&createRoomContext, request, &response);
+    chatRoomRequest.set_message("Hi! I want to create a chat room.");
+    chatRoomRequest.set_user_id(userId);
+    grpc::Status status = _stub->CreateRoom(&createRoomContext, chatRoomRequest, &chatRoomResponse);
 
     if (status.ok()) {
+        std::cout << "Server response: " << chatRoomResponse.message() << std::endl;
+        std::cout << "ChatRoom id: " << chatRoomResponse.room_id() << std::endl;
+
         grpc::ClientContext messageContext;
         std::unique_ptr<grpc::ClientReaderWriter<chat::ChatMessageRequest, chat::ChatMessageResponse>> stream(
             _stub->Message(&messageContext)  // 양방향 스트리밍 RPC 호출
         );
-
+        std::string roomId = chatRoomResponse.room_id();
         // 메시지 전송 스레드
         std::thread writer([&]() {
             while (true) {
@@ -29,8 +38,76 @@ void ChatClient::create() {
                 }
 
                 chat::ChatMessageRequest msgRequest;
-                msgRequest.set_user_id("user123");
+                msgRequest.set_user_id(userId);
+                msgRequest.set_room_id(roomId);
                 msgRequest.set_message(user_input);
+                std::cout << "client roomId :" << msgRequest.room_id() << std::endl;
+                stream->Write(msgRequest);
+            }
+        });
+
+        std::thread reader([&]() {
+            chat::ChatMessageResponse msgResponse;
+            while (stream->Read(&msgResponse)) {
+                std::cout << "Received from server: " << msgResponse.message() << std::endl;
+            }
+        });
+
+        writer.join();
+        reader.join();
+
+        grpc::Status status = stream->Finish();
+        if (!status.ok()) {
+            std::cerr << "RPC failed: " << status.error_message() << std::endl;
+        }
+    }
+}
+
+void ChatClient::join() {
+    chat::ChatRoomRequest chatRoomRequest;
+    chat::ChatRoomResponse chatRoomResponse;
+    std::string input, userId;
+
+    std::cout << "Enter your user ID: ";
+    std::getline(std::cin, userId);
+
+    std::cout << "your user ID: " << userId << std::endl;
+
+    std::cout << "Enter room id: ";
+    std::getline(std::cin, input);
+
+    grpc::ClientContext JoinRoomContext;
+    chatRoomRequest.set_message("Hi! I want to join a chat room.");
+    chatRoomRequest.set_room_id(input);
+    chatRoomRequest.set_user_id(userId);
+
+    grpc::Status status = _stub->JoinRoom(&JoinRoomContext, chatRoomRequest, &chatRoomResponse);
+    if (status.ok()) {
+        std::cout << "Server response: " << chatRoomResponse.message() << std::endl;
+        std::cout << "ChatRoom id: " << chatRoomResponse.room_id() << std::endl;
+
+        grpc::ClientContext messageContext;
+        std::unique_ptr<grpc::ClientReaderWriter<chat::ChatMessageRequest, chat::ChatMessageResponse>> stream(
+            _stub->Message(&messageContext)  // 양방향 스트리밍 RPC 호출
+        );
+        std::string roomId = chatRoomResponse.room_id();
+        // 메시지 전송 스레드
+        std::thread writer([&]() {
+            while (true) {
+                std::string user_input;
+                std::cout << "Enter message: ";
+                std::getline(std::cin, user_input);
+
+                if (user_input == "exit") {
+                    stream->WritesDone();
+                    break;
+                }
+
+                chat::ChatMessageRequest msgRequest;
+                msgRequest.set_user_id(userId);
+                msgRequest.set_room_id(roomId);
+                msgRequest.set_message(user_input);
+                std::cout << "client roomId :" << roomId << std::endl;
                 stream->Write(msgRequest);
             }
         });
@@ -51,22 +128,8 @@ void ChatClient::create() {
             std::cerr << "RPC failed: " << status.error_message() << std::endl;
         }
     }
-}
-
-
-void ChatClient::join() {
-    std::cout << "join" << std::endl;
-    chat::ChatRoomRequest request;
-    request.set_message("Hi!");
-
-    chat::ChatRoomResponse response;
-    grpc::ClientContext context;
-    grpc::Status status = _stub->JoinRoom(&context, request, &response);
-
-    if (status.ok()) {
-        std::cout << "Server response: " << response.message() << std::endl;
-    } else {
-        std::cout << "RPC failed" << std::endl;
+    else {
+        std::cout << "invalid chatRoom id" << std::endl;
     }
 }
 

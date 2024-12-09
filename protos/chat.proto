@@ -4,18 +4,21 @@ package chat;
 
 message ChatRoomRequest {
   string room_id = 1;
-  string message = 2;
+  string user_id = 2;
+  string message = 3;
 }
 
 message ChatRoomResponse {
   string room_id = 1;
-  string message = 2;
+  string user_id = 2;
+  string message = 3;
 }
 
 // 채팅 메시지 요청
 message ChatMessageRequest {
-  string user_id = 1;
-  string message = 2;
+  string room_id = 1;
+  string user_id = 2;
+  string message = 3;
 }
 
 // 서버의 응답 메시지
