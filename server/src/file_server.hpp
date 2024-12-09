@@ -9,8 +9,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-#include "common.hpp"
-
 #define PORT 8080
 
 int file_server();
