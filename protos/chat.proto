@@ -1,18 +1,33 @@
-// chat.proto
 syntax = "proto3";
 
 package chat;
 
-// 메시지 정의
-message HelloRequest {
-  string name = 1;
+message ChatRoomRequest {
+  string room_id = 1;
+  string message = 2;
 }
 
-message HelloResponse {
-  string message = 1;
+message ChatRoomResponse {
+  string room_id = 1;
+  string message = 2;
 }
 
-// 서비스 정의
+// 채팅 메시지 요청
+message ChatMessageRequest {
+  string user_id = 1;
+  string message = 2;
+}
+
+// 서버의 응답 메시지
+message ChatMessageResponse {
+  string status = 1;
+  string message = 2;
+}
+
+// gRPC 서비스 정의
 service ChatService {
-  rpc SayHello (HelloRequest) returns (HelloResponse);
+  rpc CreateRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc JoinRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc LeaveRoom(ChatRoomRequest) returns (ChatRoomResponse);
+  rpc Message(stream ChatMessageRequest) returns (stream ChatMessageResponse);
 }
