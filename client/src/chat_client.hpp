@@ -16,6 +16,8 @@ public:
     void join();
 private:
     std::unique_ptr<chat::ChatService::Stub> _stub;
+
+    void chatLoop(chat::ChatRoomResponse &response);
 };
 
 int chat_client();
