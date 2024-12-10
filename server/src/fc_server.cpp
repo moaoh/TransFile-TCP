@@ -1,8 +1,26 @@
 #include "fc_server.hpp"
 
-//TODO : 어떠한 클라이언트로 들어오든 처리가능하게 수정필요
+void startFileServer(int port) {
+    file_server(port);
+}
+
+void startChatServer(int port) {
+    chat_server(port);
+}
+
 int main() {
-    // file_server();
-    chat_server();
+    // 두 서버를 서로 다른 포트에서 실행
+    int fileServerPort = 12345;
+    int chatServerPort = 50051;
+
+    // 파일 서버를 별도의 스레드에서 실행
+    std::thread fileServerThread([&]() {
+        startFileServer(fileServerPort);
+    });
+
+    // gRPC 서버 실행
+    startChatServer(chatServerPort);
+
+    fileServerThread.join();
     return 0;
 }

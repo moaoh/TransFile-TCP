@@ -1,11 +1,13 @@
 #include "file_server.hpp"
 
 // tcp
-int file_server() {
+int file_server(int port) {
   int server_fd, new_socket, valread;
   struct sockaddr_in address;
   int addrlen = sizeof(address);
   char buffer[1024] = {0};
+
+  std::cout << "File Server listening on localhost:" << port << std::endl;
   std::ofstream file("received.txt", std::ios::binary);  // 수신 파일 저장
 
   // socket 생성
@@ -16,7 +18,7 @@ int file_server() {
 
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(PORT);
+  address.sin_port = htons(port);
 
   // socket이 특정 ip주소와 포트를 사용할 수 있도록 허용
   if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
@@ -37,6 +39,7 @@ int file_server() {
 
   // 클라이언트로부터 받은 파일 내용을 저장
   while ((valread = read(new_socket, buffer, sizeof(buffer))) > 0) {
+    // std::cout << buffer << std::endl;
     file.write(buffer, valread);  // 파일에 쓰기
   }
 

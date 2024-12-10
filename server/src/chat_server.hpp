@@ -6,6 +6,9 @@
 
 #include "chat.grpc.pb.h"
 #include <grpc++/grpc++.h>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 // gRPC
 class ChatServiceImpl final : public chat::ChatService::Service
@@ -28,6 +31,7 @@ private:
     std::mutex _client_mutex;
 
     bool isUserInRoom(const std::string& roomId, const std::string& userId);
+    std::string createRoomId();
 };
 
-void chat_server();
+void chat_server(int port);

@@ -1,23 +1,25 @@
 #include "chat_server.hpp"
 
-std::string generateRandomString(size_t length) {
-    const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    std::random_device rd;  // 랜덤 시드 생성
-    std::mt19937 generator(rd());  // Mersenne Twister 엔진
-    std::uniform_int_distribution<> distribution(0, characters.size() - 1);
+std::string generateRoomId() {
+    boost::uuids::uuid uuid = boost::uuids::random_generator()();
+    return boost::uuids::to_string(uuid);
+}
 
-    std::string randomString;
-    for (size_t i = 0; i < length; ++i) {
-        randomString += characters[distribution(generator)];
+std::string ChatServiceImpl::createRoomId() {
+    std::string roomId;
+
+    while (true) {
+        roomId = generateRoomId();
+        if (_chatRoom.find(roomId) == _chatRoom.end()) {
+            return roomId;
+        }
     }
-
-    return randomString;
 }
 
 grpc::Status ChatServiceImpl::CreateRoom(grpc::ServerContext* context,
     const chat::ChatRoomRequest* request, chat::ChatRoomResponse* response) {
 
-    std::string roomId = generateRandomString(5);
+    std::string roomId = createRoomId();
     std::string userId = request->user_id();
 
     {
@@ -136,8 +138,8 @@ grpc::Status ChatServiceImpl::Message(grpc::ServerContext* context,
     return grpc::Status::OK;
 }
 
-void chat_server() {
-    std::string server_address("0.0.0.0:50051");
+void chat_server(int port) {
+    std::string server_address = "localhost:" + std::to_string(port);
     ChatServiceImpl service;
 
     grpc::ServerBuilder builder;
@@ -145,6 +147,6 @@ void chat_server() {
     builder.RegisterService(&service);
 
     std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-    std::cout << "Server listening on " << server_address << std::endl;
+    std::cout << "Chat Server listening on " << server_address << std::endl;
     server->Wait();
 }
