@@ -1,25 +1,28 @@
 # gRPC TCP Chat
 
-이 프로젝트는 `gRPC`와 `TCP` 소켓을 활용하여 실시간으로 메시지를 주고받을 수 있는 채팅 애플리케이션입니다. `gRPC를` 통해 클라이언트와 서버 간의 효율적인 메시징을 구현하고, `TCP` 소켓을 사용하여 파일 전송 기능을 지원합니다.
+이 프로젝트는 `gRPC`와 `TCP` 소켓을 활용하여 실시간으로 메시지를 주고받을 수 있는 채팅 애플리케이션입니다. `gRPC`를 통해 클라이언트와 서버 간의 효율적인 채팅기능을 구현하고, `TCP` 소켓을 사용하여 파일 전송 기능을 지원합니다.
 
 ## Table Of Contents
 
 1. [Preview](#preview)
-2. [Function](#Function)
+2. [Function](#function)
 3. [stack](#stack)
-2. [Build and Run](##build-and-run)
-3. [How to use](#How to use)
-4. [Key Features](#Key Features)
+4. [Build and Run](#build-and-run)
+5. [How to use](#how-to-use)
+6. [Key Features](#key-features)
 
 ## Preview
 
-image line
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/8a5ea17c-e223-4e97-a263-2f5f6f04a4f3">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/ad3338f5-6961-4e04-860a-ba5aba64fd90">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/26b15134-f950-4c89-b1cc-3227447eb5f3">
+
 
 ## Function
 
 - **멀티 클라이언트 지원**: 여러 사용자가 동시에 채팅방에 접속하여 실시간으로 메시지를 주고받을 수 있습니다. 각 클라이언트는 독립적으로 채팅에 참여하며, 서버는 이를 효율적으로 관리합니다.
-- **gRPC 기반 메시징**: `gRPC`를 사용하여 고성능의 메시지 송수신을 구현했습니다. `Protobuf를` 이용한 데이터 직렬화로 효율적인 네트워크 통신이 가능합니다.
-- **TCP 소켓을 통한 파일 전송**: `TCP` 소켓을 이용하여 클라이언트 간 파일 전송이 가능합니다. 서버는 서버 중계 방식을 사용하여, 안정적인 데이터 전송을 보장합니다.
+- **gRPC 기반 메시징**: `gRPC`를 사용하여 고성능의 채팅기능을 구현했습니다. `Protobuf`를 이용한 데이터 직렬화로 효율적인 네트워크 통신이 가능합니다.
+- **TCP 소켓을 통한 파일 전송**: `TCP` 소켓을 이용하여 클라이언트 간 파일 전송이 가능합니다. 서버는 서버중계방식을 사용하여, 안정적인 데이터 전송을 보장합니다.
 
 ## stack
 
@@ -32,7 +35,7 @@ image line
 ## Build and Run
 
 1. **의존성 설치**  
-   이 프로젝트는 `gRPC`, `Protobuf`, `Boost` 라이브러리를 사용합니다. 아래 명령어로 의존성을 설치할 수 있습니다:
+   이 프로젝트는 `gRPC`, `Protobuf`, `Boost` 라이브러리를 사용합니다. 아래 명령어로 설치할 수 있습니다 (MAC):
 
    ```bash
    # gRPC와 Protobuf 설치
@@ -103,12 +106,8 @@ image line
    [chat room]
    Enter your User ID:
    ```
-   그 후 클라이언트는 해당 포트에서 실행 중인 서버에 연결되어, 채팅방을 생성하거나 채팅방에 입장하는 기능을 제공합니다. 포트를 통해 서버와 클라이언트 간의 실시간 통신이 가능하며, 서버와 클라이언트는 연결된 포트에 맞게 데이터를 주고받습니다.
-
-   #### 추가 설명
-
-   •	포트 번호를 통해 여러 서버에 연결 가능: 클라이언트가 실행될 때 Chat Server와 File Server의 포트를 선택할 수 있기 때문에, 사용자는 자신이 원하는 서버와 통신할 수 있습니다.
-   •	동적 연결: 클라이언트가 입력한 포트 번호에 맞는 서버가 자동으로 연결되며, 사용자는 서버의 변경 없이 다양한 서비스를 이용할 수 있습니다.
+   그 후 클라이언트는 해당 포트에서 실행 중인 서버에 연결되어, 채팅방을 생성하거나 채팅방에 입장하는 기능을 제공합니다.
+   포트를 통해 서버와 클라이언트 간의 실시간 통신이 가능하며, 서버와 클라이언트는 연결된 포트에 맞게 데이터를 주고받습니다.
 
 ## Key Features
 
