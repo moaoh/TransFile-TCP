@@ -12,8 +12,8 @@ public:
     ChatClient(std::shared_ptr<grpc::Channel> channel)
         : _stub(chat::ChatService::NewStub(channel)) {}
 
-    void create();
-    void join();
+    void create(const std::string &userId);
+    void join(const std::string &userId, const std::string &roomId);
 private:
     std::unique_ptr<chat::ChatService::Stub> _stub;
 
