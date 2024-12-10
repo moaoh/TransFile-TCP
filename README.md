@@ -13,9 +13,30 @@
 
 ## Preview
 
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/8a5ea17c-e223-4e97-a263-2f5f6f04a4f3">
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/ad3338f5-6961-4e04-860a-ba5aba64fd90">
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/26b15134-f950-4c89-b1cc-3227447eb5f3">
+<table>
+  <th colspan="2">
+    chat room
+  </th>
+  <tr>
+    <td>
+      <img width="450" alt="image" src="https://github.com/user-attachments/assets/8a5ea17c-e223-4e97-a263-2f5f6f04a4f3">
+    </td>
+    <td>
+      <img width="450" alt="image" src="https://github.com/user-attachments/assets/ad3338f5-6961-4e04-860a-ba5aba64fd90">
+    </td>
+  </tr>
+  </table>
+
+<table>
+  <th colspan="2">
+    file send & receive
+  </th>
+  <tr>
+    <td>
+      <img width="450" alt="image" src="https://github.com/user-attachments/assets/26b15134-f950-4c89-b1cc-3227447eb5f3">
+    </td>
+  </tr>
+</table>
 
 
 ## Function
