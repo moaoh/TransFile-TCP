@@ -63,7 +63,6 @@ grpc::Status ChatServiceImpl::Message(grpc::ServerContext* context,
             std::lock_guard<std::mutex> lock(_client_mutex);
             _userStreams[roomId][userId] = stream;
         }
-        // 방에 있는 다른 유저들에게 알림 전송
         chat::ChatMessageResponse joinNotification;
         joinNotification.set_message("System: User " + userId + " has joined the room.");
         {
@@ -105,11 +104,9 @@ grpc::Status ChatServiceImpl::Message(grpc::ServerContext* context,
     {
         std::lock_guard<std::mutex> lock(_client_mutex);
 
-        // 채팅방에서 유저 ID 제거
         auto& chatRoom = _chatRoom[roomId];
         chatRoom.erase(std::remove(chatRoom.begin(), chatRoom.end(), userId), chatRoom.end());
 
-        // 알림 메시지 생성
         chat::ChatMessageResponse leaveNotification;
         leaveNotification.set_message("System: User " + userId + " has left the room.");
 
