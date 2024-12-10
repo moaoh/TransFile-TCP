@@ -6,6 +6,8 @@
 #include <grpcpp/grpcpp.h>
 #include "chat.grpc.pb.h"  // chat.proto에서 생성된 헤더 파일
 
+#include <common.hpp>
+
 class ChatClient
 {
 public:
@@ -20,4 +22,6 @@ private:
     void chatLoop(chat::ChatRoomResponse &response);
 };
 
+void explanation();
+void chatRoomLoop();
 int chat_client();

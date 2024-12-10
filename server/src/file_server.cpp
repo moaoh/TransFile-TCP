@@ -1,10 +1,7 @@
 #include "file_server.hpp"
 
 // tcp
-std::vector<int> client_sockets;
-std::vector<int> waiting_for_receive;
-
-void read_file(int send_sock, int receive_sock) {
+void FileServer::read_file(int send_sock, int receive_sock) {
     char buffer[BUFFER_SIZE];
     int bytes_received;
 
@@ -18,7 +15,7 @@ void read_file(int send_sock, int receive_sock) {
     std::cout << "File transfer complete." << std::endl;
 }
 
-void send_file(int client_sock) {
+void FileServer::send_file(int client_sock) {
     std::cout << "in send_file" << std::endl;
     if (waiting_for_receive.empty()) {
         std::cout << "No clients waiting to receive the file." << std::endl;
@@ -30,7 +27,7 @@ void send_file(int client_sock) {
     }
 }
 
-void receive_file(int client_sock) {
+void FileServer::receive_file(int client_sock) {
     std::cout << "in receive_file" << std::endl;
 
     if (waiting_for_receive.empty()) {
@@ -43,7 +40,7 @@ void receive_file(int client_sock) {
     }
 }
 
-void handle_client(int client_sock, const char *client_type) {
+void FileServer::handle_client(int client_sock, const char *client_type) {
     std::cout << "in handle_client" << std::endl;
     std::cout << client_sock << std::endl;
     if (strncmp(client_type, "SEND", 4) == 0) {
@@ -56,7 +53,7 @@ void handle_client(int client_sock, const char *client_type) {
     }
 }
 
-void file_server_loop(int port) {
+void FileServer::file_server_loop(int port) {
     int server_fd, client_sock;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
@@ -105,7 +102,9 @@ void file_server_loop(int port) {
 }
 
 int file_server(int port) {
+    FileServer fileServer;
+
     std::cout << "File Server listening on localhost:" << port << std::endl;
-    file_server_loop(port);
+    fileServer.file_server_loop(port);
     return 0;
 }

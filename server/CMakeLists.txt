@@ -17,11 +17,6 @@ add_library(file_server SHARED
         src/file_server.cpp
 )
 
-target_include_directories(fc_server PRIVATE
-        ${CMAKE_SOURCE_DIR}/common
-        ${CMAKE_SOURCE_DIR}/src
-)
-
 target_include_directories(chat_server PRIVATE
         ${CMAKE_SOURCE_DIR}/common
 )
@@ -30,10 +25,14 @@ target_include_directories(file_server PRIVATE
         ${CMAKE_SOURCE_DIR}/common
 )
 
+target_include_directories(fc_server PRIVATE
+        ${CMAKE_SOURCE_DIR}/common
+)
+
 target_link_libraries(fc_server PRIVATE
-        common
         file_server
         chat_server
+        common
 )
 
 target_link_libraries(chat_server PRIVATE

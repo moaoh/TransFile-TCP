@@ -10,8 +10,8 @@ void startChatServer(int port) {
 
 int main() {
     // 두 서버를 서로 다른 포트에서 실행
-    int fileServerPort = 12345;
-    int chatServerPort = 50051;
+    int fileServerPort = FILE_PORT;
+    int chatServerPort = CHAT_PORT;
 
     // 파일 서버를 별도의 스레드에서 실행
     std::thread fileServerThread([&]() {

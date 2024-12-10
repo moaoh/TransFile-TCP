@@ -5,7 +5,7 @@ void ChatClient::chatLoop(chat::ChatRoomResponse &response) {
     std::string userId = response.user_id();
     std::string roomId = response.room_id();
 
-    std::cout << "ChatRoom ID : " << roomId << std::endl;
+    std::cout << "ChatRoom ID: " << roomId << std::endl;
     std::cout << "To leave the chat room, enter ‘exit’." << std::endl;
 
     grpc::ClientContext messageContext;
@@ -17,15 +17,15 @@ void ChatClient::chatLoop(chat::ChatRoomResponse &response) {
     initMessage.set_message("");
     stream->Write(initMessage);
 
-    bool isStreamActive = true;
+    std::atomic<bool> isStreamActive(true);
     std::thread writer([&]() {
         while (isStreamActive) {
             std::string user_input;
             std::getline(std::cin, user_input);
 
-            if (user_input == "exit" || isStreamActive == false) {
+            if (user_input == "exit" || !isStreamActive.load()) {
                 stream->WritesDone();
-                isStreamActive = false;
+                isStreamActive.store(false);
                 break;
             }
 
@@ -44,7 +44,7 @@ void ChatClient::chatLoop(chat::ChatRoomResponse &response) {
         while (isStreamActive) {
             if (!stream->Read(&msgResponse)) {
                 std::cerr << "Connection closed or error occurred. Exiting..." << std::endl;
-                isStreamActive = false;
+                isStreamActive.store(false);
                 break;
             }
             std::cout << msgResponse.message() << std::endl;
@@ -71,7 +71,7 @@ void ChatClient::create(const std::string &userId) {
         chatLoop(chatRoomResponse);
     }
     else {
-        std::cout << "invalid chatRoom" << std::endl;
+        std::cerr << "[ERROR] Unable to create chat room" << std::endl;
     }
 }
 
@@ -79,22 +79,16 @@ void ChatClient::join(const std::string &userId, const std::string &roomId) {
     chat::ChatRoomRequest chatRoomRequest;
     chat::ChatRoomResponse chatRoomResponse;
 
-    grpc::ClientContext JoinRoomContext;
+    grpc::ClientContext joinRoomContext;
     chatRoomRequest.set_room_id(roomId);
     chatRoomRequest.set_user_id(userId);
-    grpc::Status status = _stub->JoinRoom(&JoinRoomContext, chatRoomRequest, &chatRoomResponse);
+    grpc::Status status = _stub->JoinRoom(&joinRoomContext, chatRoomRequest, &chatRoomResponse);
     if (status.ok()) {
+        std::cout << "Joined ChatRoom." << std::endl;
         chatLoop(chatRoomResponse);
     }
     else {
-        std::cout << "[ERROR] invalid ChatRoom ID" << std::endl;
-    }
-}
-
-void	line_eof(void)
-{
-    if(std::cin.eof()) {
-        exit(1);
+        std::cerr << "[ERROR] Invalid ChatRoom ID" << std::endl;
     }
 }
 
@@ -103,27 +97,29 @@ void explanation()
     std::cout << "[chat room]" << std::endl;
 }
 
-void chatRoom_loop() {
-    ChatClient client(grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials()));
+void chatRoomLoop() {
+    int chat_client_port = CHAT_PORT;
+    ChatClient client(grpc::CreateChannel("localhost:" + std::to_string(chat_client_port), grpc::InsecureChannelCredentials()));
     std::string roomId, userId;
 
-    std::cout << "Enter your user ID: " << std::flush;
+    std::cout << "Enter your User ID: ";
     std::getline(std::cin, userId);
-    line_eof();
-    std::cout << "Enter Join room ID (or press Enter to create a new room): " << std::flush;
+    std::cin.ignore();
+
+    std::cout << "Enter Room ID to Join (or press Enter to create a new room): ";
     std::getline(std::cin, roomId);
-    line_eof();
+    std::cin.ignore();
+
     if (roomId.empty()) {
         client.create(userId);
-    }
-    else {
+    } else {
         client.join(userId, roomId);
     }
 }
 
-int main() {
+int chat_client() {
     explanation();
-    chatRoom_loop();
+    chatRoomLoop();
 
     return 0;
 }

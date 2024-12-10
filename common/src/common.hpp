@@ -2,4 +2,4 @@
 
 #include <iostream>
 
-void printMessage();
+#include "constants.hpp"

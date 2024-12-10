@@ -28,17 +28,20 @@ add_custom_command(
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 # sample_grpc_proto 라이브러리 추가
-add_library(common
+add_library(common SHARED
         ${sample_proto_sources}
         ${sample_proto_headers}
         ${sample_grpc_sources}
         ${sample_grpc_headers}
+        src/common.cpp
 )
 
 # 생성된 헤더 파일 경로를 공개(include) 디렉토리로 추가
 target_include_directories(common PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}  # 프로토 컴파일 결과 헤더 경로
         ${CMAKE_CURRENT_SOURCE_DIR}  # 필요한 경우 common 디렉터리 포함
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 # gRPC 및 Protobuf 라이브러리 링크

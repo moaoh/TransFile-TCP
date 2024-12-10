@@ -1,7 +1,7 @@
 #include "file_client.hpp"
 
-// tcp
-void send_client(int client_fd, const std::string& filePath) {
+// 파일 전송
+void send_file(int client_fd, const std::string& file_path) {
     int bytes_received;
     char buffer[BUFFER_SIZE];
     const char *action = "SEND";
@@ -13,7 +13,7 @@ void send_client(int client_fd, const std::string& filePath) {
         }
     }
 
-    std::ifstream file(filePath, std::ios::binary);
+    std::ifstream file(file_path, std::ios::binary);
     if (!file.is_open()) {
         std::cerr << "File open error!" << std::endl;
         return ;
@@ -33,7 +33,8 @@ void send_client(int client_fd, const std::string& filePath) {
     close(client_fd);
 }
 
-void receive_client(int client_fd) {
+// 파일 수신
+void receive_file(int client_fd) {
     int bytes_received;
     const char *action = "RECEIVE";
     send(client_fd, action, strlen(action) + 1, 0);
@@ -63,7 +64,8 @@ void receive_client(int client_fd) {
     close(client_fd);
 }
 
-int ready_client() {
+// 클라이언트 소켓 생성
+int create_client_socket() {
     int client_fd;
     struct sockaddr_in serv_addr;
 
@@ -73,7 +75,7 @@ int ready_client() {
     }
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+    serv_addr.sin_port = htons(FILE_PORT);
 
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
         std::cerr << "Invalid address or address not supported" << std::endl;
@@ -88,43 +90,38 @@ int ready_client() {
     return client_fd;
 }
 
-void	line_eof(void)
-{
-    if(std::cin.eof()) {
-        exit(1);
-    }
-}
-
-void file_loop() {
+// 파일 전송/수신 루프
+void file_transfer_loop() {
     int client_fd;
-    std::string type, filePath;
-    std::cout << "Enter type : " << std::flush;
+    std::string type, file_path;
+    std::cout << "Enter type (SEND/RECEIVE): " << std::flush;
     std::getline(std::cin, type);
-    line_eof();
+    std::cin.ignore();
 
-    if (type == "1" || type == "SEND") {
-        client_fd = ready_client();
-        std::cout << "file Path : " << std::flush;
-        std::getline(std::cin, filePath);
-        line_eof();
-        send_client(client_fd, filePath);
+    if (type == "SEND") {
+        client_fd = create_client_socket();
+        std::cout << "File path: " << std::flush;
+        std::getline(std::cin, file_path);
+        std::cin.ignore();
+        send_file(client_fd, file_path);
     }
-    else if (type == "2"|| type == "RECEIVE") {
-        client_fd = ready_client();
-        std::cout << "waiting..." << std::endl;
-        receive_client(client_fd);
+    else if (type == "RECEIVE") {
+        client_fd = create_client_socket();
+        std::cout << "Waiting for file..." << std::endl;
+        receive_file(client_fd);
     }
 }
 
-void explanation()
-{
-    std::cout << "[file]" << std::endl;
-    std::cout << "1 : SEND" << std::endl;
-    std::cout << "2 : RECEIVE" << std::endl;
+// 클라이언트 설명 출력
+void print_client_info() {
+    std::cout << "[File delivery]" << std::endl;
+    std::cout << "SEND: Send a file" << std::endl;
+    std::cout << "RECEIVE: Receive a file" << std::endl;
 }
 
-int main() {
-    explanation();
-    file_loop();
+// 파일 클라이언트 실행
+int file_client() {
+    print_client_info();
+    file_transfer_loop();
     return 0;
 }
