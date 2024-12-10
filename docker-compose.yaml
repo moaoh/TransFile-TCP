@@ -8,7 +8,7 @@ services:
     volumes:
       - ./common:/app/common
       - ./server:/app/server
-      - ./client:/app/client
+#      - ./client:/app/client
 
   server:
     image: server
@@ -22,15 +22,15 @@ services:
       - ./server:/app/server
       - ./common:/app/common
 
-  client:
-    image: client
-    container_name: client
-    build:
-      context: .
-      dockerfile: client/Dockerfile
-    depends_on:
-      - cmake-build
-      - server
-    volumes:
-      - ./client:/app/client
-      - ./common:/app/common
+#  client:
+#    image: client
+#    container_name: client
+#    build:
+#      context: .
+#      dockerfile: client/Dockerfile
+#    depends_on:
+#      - cmake-build
+#      - server
+#    volumes:
+#      - ./client:/app/client
+#      - ./common:/app/common
