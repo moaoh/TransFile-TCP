@@ -15,7 +15,6 @@ void run_client() {
 
     try {
         port = std::stoi(sPort);
-        std::cout << "Port: " << port << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Error: The input is not a valid number." << std::endl;
         port = 0;
