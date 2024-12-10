@@ -104,11 +104,11 @@ void chatRoomLoop() {
 
     std::cout << "Enter your User ID: ";
     std::getline(std::cin, userId);
-    std::cin.ignore();
+    line_eof();
 
     std::cout << "Enter Room ID to Join (or press Enter to create a new room): ";
     std::getline(std::cin, roomId);
-    std::cin.ignore();
+    line_eof();
 
     if (roomId.empty()) {
         client.create(userId);

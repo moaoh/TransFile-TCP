@@ -96,13 +96,13 @@ void file_transfer_loop() {
     std::string type, file_path;
     std::cout << "Enter type (SEND/RECEIVE): " << std::flush;
     std::getline(std::cin, type);
-    std::cin.ignore();
+    line_eof();
 
     if (type == "SEND") {
         client_fd = create_client_socket();
         std::cout << "File path: " << std::flush;
         std::getline(std::cin, file_path);
-        std::cin.ignore();
+        line_eof();
         send_file(client_fd, file_path);
     }
     else if (type == "RECEIVE") {
