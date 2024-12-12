@@ -1,7 +1,8 @@
 # cmake-build/Dockerfile
-FROM alpine:latest
+FROM alpine:latest AS cmake-build
 
 # 필수 패키지 설치
+# 필요한 패키지 설치
 RUN apk update && apk add --no-cache \
     build-base \
     cmake \
@@ -11,27 +12,35 @@ RUN apk update && apk add --no-cache \
     clang \
     libstdc++ \
     bash \
+    openssl-dev \
+    zlib-dev \
+    g++ \
+    make \
     && rm -rf /var/cache/apk/*
 
-# protobuf와 gRPC 소스 다운로드
-WORKDIR /protobuf
-RUN git clone --branch v21.12 --single-branch https://github.com/protocolbuffers/protobuf.git /protobuf
 WORKDIR /grpc
-RUN git clone --branch v1.68.2 --single-branch https://github.com/grpc/grpc.git /grpc
-
-# 빌드
-WORKDIR /protobuf
-RUN git submodule update --init --recursive && mkdir build && cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && \
-    make -j$(nproc) && make install
+RUN git clone --branch v1.68.2 --single-branch https://github.com/grpc/grpc.git /grpc \
+    && cd /grpc \
+    && git submodule update --init --recursive
 
 WORKDIR /grpc
-RUN git submodule update --init --recursive && mkdir build && cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && \
-    make -j$(nproc) && make install
+RUN mkdir build \
+    && cd build \
+    && cmake .. \
+    && make -j4
 
-ENV Protobuf_DIR="/usr/local/lib/cmake/protobuf"
-ENV grpc_DIR="/usr/local/lib/cmake/grpc"
+WORKDIR /protobuf
+RUN git clone --branch v21.12 --single-branch https://github.com/protocolbuffers/protobuf.git /protobuf \
+    && cd /protobuf \
+    && git submodule update --init --recursive
+
+WORKDIR /protobuf
+RUN mkdir build \
+    && cd build \
+    && cmake .. \
+    && make -j4
+
+FROM cmake-build
 
 RUN rm -rf build && mkdir -p build && cd build && \
     cmake .. && \
