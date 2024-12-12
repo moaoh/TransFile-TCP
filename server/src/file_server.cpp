@@ -16,7 +16,6 @@ void FileServer::read_file(int send_sock, int receive_sock) {
 }
 
 void FileServer::send_file(int client_sock) {
-    std::cout << "in send_file" << std::endl;
     if (waiting_for_receive.empty()) {
         std::cout << "No clients waiting to receive the file." << std::endl;
         waiting_for_receive.push_back(client_sock);
@@ -28,8 +27,6 @@ void FileServer::send_file(int client_sock) {
 }
 
 void FileServer::receive_file(int client_sock) {
-    std::cout << "in receive_file" << std::endl;
-
     if (waiting_for_receive.empty()) {
         waiting_for_receive.push_back(client_sock);
     }
@@ -41,8 +38,6 @@ void FileServer::receive_file(int client_sock) {
 }
 
 void FileServer::handle_client(int client_sock, const char *client_type) {
-    std::cout << "in handle_client" << std::endl;
-    std::cout << client_sock << std::endl;
     if (strncmp(client_type, "SEND", 4) == 0) {
         std::cout << "Client requested to send a file." << std::endl;
         send_file(client_sock);
@@ -67,14 +62,12 @@ void FileServer::file_server_loop(int port) {
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
-    // 3. 소켓 바인딩
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
         std::cerr << "Bind failed" << std::endl;
         close(server_fd);
         return;
     }
 
-    // 4. 연결 대기 (리스닝 상태로 전환)
     if (listen(server_fd, 5) < 0) {
         std::cerr << "Listen failed" << std::endl;
         close(server_fd);
